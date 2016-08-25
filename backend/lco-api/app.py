@@ -13,12 +13,14 @@ def create_coffee():
     uid = req.headers['X-CoffeeUser']
     body = req.json_body
 
-    # TODO fix code smell of duplicating defaults. For some reason
-    # kwarg sqashing was not setting title properly.
-    c = pc.new_coffee(uid=uid, title=body.get('title', "Lean Coffee"),
-                      seconds_per_topic=int(body.get('seconds_per_topic',
-                                                     300)),
-                      votes_per_user=int(body.get('votes_per_user', 2)))
+    kwargs = {}
+    if 'title' in body:
+        kwargs['title'] = body['title']
+    for int_arg in ['seconds_per_topic', 'votes_per_user']:
+        if int_arg in body:
+            kwargs[int_arg] = int(body[int_arg])
+
+    c = pc.new_coffee(uid=uid, **kwargs)
     return c.state()
 
 # Here are a few more examples:
