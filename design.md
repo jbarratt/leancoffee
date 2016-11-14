@@ -1,10 +1,19 @@
 # Lean Coffee Facilitator
 
+## Short term todo
+
+* build out functional test suite
+* add an env var so dev goes to deletable tables
+
+Primitive Auth:
+- before connecting to API, generate a uuid and shove it in localstorage
+- submit that in the headers with every request (X-CoffeeUser)
+
 ## High Level / UX Design
 
 Goals:
 
-* Allow anonymous contributors. (Organizers may need Google/FB/Twitter login.)
+* Allow anonymous contributors. (Organizers may eventually need Google/FB/Twitter login.)
 * Work great on mobile, laptop-free is nice
 * realtime all the things
 
@@ -14,9 +23,9 @@ Ideal workflow
 * Offer 'join a coffee' or 'start a coffee'
 * On start, allow entry of a title
 * Given a code to share (or just use the link)
-* MVP: leancoffee.online/#uniquestring
+* MVP: leancoffee.online/m/(uniquestring)
 
-On visit everyone gets a JWT
+On visit everyone gets a JWT or just a bare ID
 
 As organizer, your screen has a control for phases
 
@@ -125,20 +134,19 @@ Topics
     GET /coffees/{}
         Returns -> above state
 
+    # This is a logical PATCH; it will be PUT because PATCH is not supported
     PATCH /coffees/{}
         {'field': 'state', 'from': 'setup', 'to': 'topics'}
 
     POST /coffees/{}/topics
         {title, description}
 
+    # This is a logical PATCH; it will be PUT because PATCH is not supported
     PATCH /coffees/{}/topics/{}
-        {'field': 'state', 'from': 'discussing', 'to': 'discussed'}
-    
-    DELETE /coffees/{}/topics/{}
         {'field': 'state', 'from': 'discussing', 'to': 'discussed'}
 
-    PATCH /coffees/{}/topics/{}
-        {'field': 'votes', 'op': 'inc|dec' }
+    POST /coffees/{}/topics/{}
+        {'field': 'votes', 'op': 'add|remove' }
 
 # Python API
 
@@ -181,12 +189,12 @@ docker run -d -p 8000:8000 tray/dynamodb-local -inMemory -port 8000
     - CreatorId
     - Title
     - Description
-    - Votes: (counter) 
+    - Votes: (counter)
     - State (to discuss|discussing|discussed)
     - EndTime //once discussion starts, endtime is set per ticket.
 
     Users
-    
+
     - CoffeeId
     - UserId
     - SessionKey
@@ -204,7 +212,7 @@ https://github.com/justone/go-minibus
 
 
 
-Nate Jones [9:29 AM] 
+Nate Jones [9:29 AM]
 I’ve heard that Redux and Immutable js work well
 got a buddy who’s been using them
 says they’re a little bit tough to set up
@@ -224,3 +232,65 @@ https://github.com/raisemarketplace/redux-loop
 
 
 We'll need to have a channel per coffee that all the users connect to.
+
+# Revised Minimalist Frontend Strategy
+
+https://slack-files.com/T03JT4FC2-F151AAF7A-13fe6f98da
+http://joakim.beng.se/blog/posts/a-javascript-router-in-20-lines.html
+http://handlebarsjs.com/
+
+    {
+      ...
+      "scripts": {
+        "build": "babel src -d dist & stylus src/styles -o dist/styles & cp src/index.html dist/index.html",
+        "dev": "watch 'npm run build' ./src"
+      }
+      ...
+    }
+
+Try and use as much native browser goodness as possible.
+
+On startup, the landing page should say
+
+    (START) (JOIN) [ ... ]
+
+    About Lean Coffees...
+
+if the route is /.
+
+Meanwhile, in the background, an app is loading, and attaching itself to the window, a la the halloween party thing.
+
+* if you don't have a userid in localStorage, make one and save it
+* If the 'route' is a coffee ID, hide the intro div. Based on the state of the app, pick which one to show. Also spin up a 3 second state refresh loop. Make sure to tell people what link to copy or what code to type in.
+* If the admin is the admin, also show the nav bar, which lets them select things like the next state
+
+Creating Topics:
+
+Title:
+Description:
+Submit
+(scrollable list of other topics)
+
+Admin hits "Start Voting"
+
+Everyone sees "Voting. Select only 2"
+Scrollable list now has thumbs up icons.
+If you have no votes left, the others get grayed out.
+
+Admin hits Discussing
+Display becomes front and center Title / Topic, w/ "up next"
+
+Admin can hit Next or Over
+Page view becomes scrollable (printable) list of all topics (with a discussion duration on each? At least if it was gotten to or not.)
+
+UUID making:
+
+    function generateUUID() {
+        var d = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = (d + Math.random()*16)%16 | 0;
+            d = Math.floor(d/16);
+            return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+        });
+        return uuid;
+    };

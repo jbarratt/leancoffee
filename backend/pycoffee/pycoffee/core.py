@@ -126,8 +126,8 @@ class Coffee(object):
             return True
 
         # title and description can be edited by creator
-        if topic.creator_id != self.user.user_id or \
-                coffee.creator_id != self.user.user_id:
+        if not (topic.creator_id == self.user.user_id or
+                coffee.creator_id == self.user.user_id):
             return False
 
         if field == "title":
@@ -213,7 +213,7 @@ class Coffee(object):
     @staticmethod
     def shortid():
         return ''.join(random.choice(string.ascii_uppercase + string.digits)
-               for _ in range(6))
+                       for _ in range(6))
 
 
 def init_models():
