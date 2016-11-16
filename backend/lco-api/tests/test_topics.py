@@ -1,6 +1,7 @@
 import requests
 
-BASE_URL = "http://localhost:8000"
+# BASE_URL = "http://localhost:8000"
+BASE_URL = "https://jnraqwtne1.execute-api.us-west-2.amazonaws.com/dev/"
 admin_header = {"X-CoffeeUser": "testadmin"}
 user_header = {"X-CoffeeUser": "testuser"}
 

@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Lean Coffee Online</title>
+    <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+  </head>
+  <body>
+    <main role="main">
+      <div id="coffee-setup-view" class="card">
+        <span class="card-title">Set Up The Coffee Parameters</span>
+        <p>What is the topic of this coffee?</p>
+        <input id="coffeetopic" type="text" name="coffeetopic" size="50">
+        <p>How many seconds should every topic be discussed?</p>
+        <input id="duration" type="number" name="duration" value="300" size="4">
+        <p>How many votes should each user get?</p>
+        <input id="votesperuser" type="number" name="votesperuser" size="4" value="2"><br/>
+        <input type="button" value="Let's start talking! &#9749;" class="gobutton" id="createcoffee">
+      </div>
+      <div id="app-main-view">
+        <div class="card">
+          <span class="card-title">Please wait, setting up your coffee.</span>
+        </div>
+      </div>
+      <div id="landing-view">
+        <ul>
+        <li>login window goes here</li>
+        <p><a id="newcoffee" href="#">Start a new coffee</a></p>
+        <li>what about lean coffee goes here</li>
+        </ul>
+      </div>
+    </main>
+    <nav id="bottom-nav-view">
+      <i>(Optional Nav Items)</i>
+    </nav>
+    <script src="app.js"></script>
+  </body>
+</html>

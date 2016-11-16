@@ -237,8 +237,13 @@ We'll need to have a channel per coffee that all the users connect to.
 
 https://slack-files.com/T03JT4FC2-F151AAF7A-13fe6f98da
 http://joakim.beng.se/blog/posts/a-javascript-router-in-20-lines.html
+https://github.com/metagrover/ES6-for-humans
 http://handlebarsjs.com/
+(A jquery version)
+http://tutorialzine.com/2015/02/single-page-app-without-a-framework/
+https://css-tricks.com/using-the-html5-history-api/
 
+https://gist.github.com/addyosmani/9f10c555e32a8d06ddb0
     {
       ...
       "scripts": {
@@ -294,3 +299,6 @@ UUID making:
         });
         return uuid;
     };
+
+Goofy sekumorphism
+http://codepen.io/ivyrosa/pen/nhxqK

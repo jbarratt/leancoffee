@@ -1,0 +1,11 @@
+{
+  "name": "lco-fe",
+  "version": "0.0.1",
+  "description": "Lean Coffee Online Frontend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Joshua Barratt",
+  "license": "MIT"
+}
