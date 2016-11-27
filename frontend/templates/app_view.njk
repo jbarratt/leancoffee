@@ -43,8 +43,15 @@
   <ul class="coffee-topic-list">
   {% for topic in topics %}
   <li class="card">
-    <span class="topic-title">{{ topic.title}}</span>
-    <span class="topic-description">{{ topic.description}}</span>
+    <h4>{{ topic.title}}</h4>
+    <p>{{ topic.description}}</p>
+    <p>Votes: {{ topic.votes }}</p>
+    {% if topic.user_voted %}
+      <input type="button" data-topiclink="{{ topic.link }}" data-action="remove" value="Remove Vote" class="gobutton votebutton" id="votetopic-{{ topic.id }}"></input>
+    {% else %}
+      <input type="button" data-topiclink="{{ topic.link }}" data-action="add" value="Vote" class="gobutton votebutton" id="votetopic-{{ topic.id }}"></input>
+    {% endif %}
+
   </li>
   {% endfor %}
   </ul>

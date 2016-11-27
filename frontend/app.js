@@ -36,6 +36,20 @@
     return response.json();
   }
 
+  function add_click_handler(id, callback) {
+    var button = document.getElementById(id);
+    if(button) {
+      button.addEventListener('click', callback);
+    }
+  }
+
+  function add_class_click_handler(klass, callback) {
+    var buttons = document.getElementsByClassName(klass);
+    for(var i = 0; i < buttons.length; i++) {
+      buttons.item(i).addEventListener('click', callback);
+    }
+  }
+
   function render_coffee_state(state) {
     var desired_path = "/" + state["data"]["id"];
     if(window.location.pathname != desired_path) {
@@ -46,14 +60,10 @@
     var elem = document.getElementById("app-main-view");
     elem.innerHTML = nunjucks.render('templates/app_view.njk', state['data'])
 
-    var nextstate_btn = document.getElementById("nextstate");
-    if(nextstate_btn) {
-      nextstate_btn.addEventListener('click', nextstate_handler);
-    }
-    var submittopic_btn = document.getElementById("submittopic");
-    if(submittopic_btn) {
-      submittopic_btn.addEventListener('click', submittopic_handler);
-    }
+    add_click_handler("nextstate", nextstate_handler);
+    add_click_handler("submittopic", submittopic_handler);
+    add_class_click_handler("votebutton", votetopic_handler);
+
     // TODO set a timer to fetch & re-render
   }
 
@@ -128,6 +138,12 @@
   })
 
 // Should be able to use e.target.dataset['topic'] if data-topic defined on element
+
+  var votetopic_handler = function(e) {
+    e.preventDefault();
+    var data = e.target.dataset;
+    coffee_client("PUT", data['topiclink'], {'field': 'votes', 'op': data['action']})
+  }
 
   var nextstate_handler = function(e) {
     console.log("Going to next state, event: " + e);

@@ -5,6 +5,7 @@ import random
 import pytz
 from datetime import datetime
 from . import models as m
+import pdb
 
 
 class Coffee(object):
@@ -41,7 +42,7 @@ class Coffee(object):
         """ Return a serializable (dict) representation of current state,
             tuned to the current user.
         """
-        item = m.Coffee.get(self.c_id)
+        item = m.Coffee.get(self.c_id, consistent_read=True)
         return {
             'id': self.c_id,
             'state': item.state,
@@ -57,20 +58,22 @@ class Coffee(object):
     def load_topics(self):
         """ Returns a serialized list of the topics in the coffee,
             through the lens of the current user """
-        topics = m.Topic.query(self.c_id)
+        topics = m.Topic.query(self.c_id, consistent_read=True)
         epoch_time = pytz.utc.localize(datetime.utcfromtimestamp(0))
+        user_votes = [] if self.user.votes is None else self.user.votes
         topic_list = [
             {
                 "title": t.title,
                 "description": t.description,
                 "id": t.topic_id,
-                "votes": len(t.votes),
-                "user_voted": t.topic_id in self.user.votes,
+                "votes": 0 if t.votes is None else len(t.votes),
+                "users_voting": [] if t.votes is None else list(t.votes),
+                "user_voted": t.topic_id in user_votes,
                 "state": t.state,
                 "end_time": (t.endtime - epoch_time).total_seconds()
             } for t in topics
         ]
-        return sorted(topic_list, key=lambda k: k['votes'])
+        return sorted(topic_list, key=lambda k: k['votes'], reverse=True)
 
     def update_state(self, newstate, oldstate=None):
         """ Update the coffee state from oldstate to newstate.
@@ -86,8 +89,7 @@ class Coffee(object):
         coffee = m.Coffee.get(self.c_id)
         if oldstate is not None and coffee.state != oldstate:
             return False
-        coffee.state = newstate
-        coffee.save()
+        coffee.update_item('state', newstate, action="PUT")
         return True
 
     def create_topic(self, title=None, description=None):
@@ -121,8 +123,7 @@ class Coffee(object):
                 return False
             if oldstate is not None and topic.state != oldstate:
                 return False
-            topic.state = newstate
-            topic.save()
+            topic.update_item('state', newstate, action="PUT")
             return True
 
         # title and description can be edited by creator
@@ -133,15 +134,13 @@ class Coffee(object):
         if field == "title":
             if oldstate is not None and topic.title != oldstate:
                 return False
-            topic.title = newstate
-            topic.save()
+            topic.update_item('title', newstate, action="PUT")
             return True
 
         if field == "description":
             if oldstate is not None and topic.description != oldstate:
                 return False
-            topic.description = newstate
-            topic.save()
+            topic.update_item('description', newstate, action="PUT")
             return True
 
     def delete_topic(self, topic_id):
@@ -156,35 +155,67 @@ class Coffee(object):
             return True
         return False
 
+    @staticmethod
+    def set_add(orig, new):
+        if orig is None:
+            return set([new])
+        else:
+            return set(orig) | set([new])
+
+    @staticmethod
+    def set_remove(orig, removed):
+        if orig is None:
+            return None
+        new = set(orig) - set([removed])
+        if len(new) == 0:
+            return None
+        return new
+
     def vote(self, topic_id, op):
         """ Update the vote on a topic
             'op' may be add or remove
             Returns True if the vote was cast,
             False on error (typically user has used available votes)
         """
+        # pdb.set_trace()
         topic = m.Topic.get(self.c_id, topic_id)
         coffee = m.Coffee.get(self.c_id)
         self.load_user()
 
-        if op == "add" and len(self.user.votes) > coffee.votes_per_user:
+        print "Trying to '{}' on topic {}".format(op, topic_id)
+
+        if op == "add" and self.user.votes \
+                and len(self.user.votes) > coffee.votes_per_user:
+            print "Can't add when {} > {}".format(len(self.user.votes),
+                                                  coffee.votes_per_user)
             return False
 
-        if self.user.user_id not in topic.votes:
+        if not topic.votes or self.user.user_id not in topic.votes:
             if op == "add":
-                topic.votes.add(self.user.user_id)
-                topic.save()
-                self.user.votes.add(topic_id)
-                self.user.save()
+                topic.update_item('votes', self.set_add(topic.votes,
+                                                        self.user.user_id),
+                                  action="PUT")
+                self.user.update_item(
+                    'votes', self.set_add(self.user.votes, topic_id),
+                    action="PUT")
                 return True
             else:
+                print "Can't remove when user has not voted"
                 return False
         else:
             if op == "remove":
-                topic.votes.remove(self.user.user_id)
-                topic.save()
-                self.user.votes.remove(topic_id)
-                self.user.save()
+                new_val = self.set_remove(topic.votes, self.user.user_id)
+                if new_val is None:
+                    topic.update_item('votes', action="DELETE")
+                else:
+                    topic.update_item('votes', new_val, action="PUT")
+                new_val = self.set_remove(self.user.votes, topic_id)
+                if new_val is None:
+                    self.user.update_item('votes', action="DELETE")
+                else:
+                    self.user.update_item('votes', new_val, action="PUT")
                 return True
+        print "Vote function bail out point"
         return False
 
     def delete_coffee(self):

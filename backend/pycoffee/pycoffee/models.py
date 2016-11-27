@@ -6,6 +6,13 @@ from pynamodb.attributes import (
     UnicodeSetAttribute
 )
 
+# FIXME turn this off after bug hunt
+import logging
+logging.basicConfig()
+log = logging.getLogger("pynamodb")
+log.setLevel(logging.DEBUG)
+log.propagate = True
+
 
 class Coffee(Model):
 
@@ -43,9 +50,11 @@ class Topic(Model):
     creator_id = UnicodeAttribute()
     title = UnicodeAttribute(default="")
     description = UnicodeAttribute(default="")
-    votes = UnicodeSetAttribute(default=set())
+    votes = UnicodeSetAttribute()
     state = UnicodeAttribute(default="to_discuss")
     endtime = UTCDateTimeAttribute(default=datetime.datetime.utcnow())
+
+# TODO factor votes out into a separate TopicVotes model or something
 
 
 class User(Model):
@@ -62,4 +71,4 @@ class User(Model):
     coffee_id = UnicodeAttribute(hash_key=True)
     user_id = UnicodeAttribute(range_key=True)
     session_key = UnicodeAttribute(default="")
-    votes = UnicodeSetAttribute(default=set())
+    votes = UnicodeSetAttribute()

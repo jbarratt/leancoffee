@@ -85,11 +85,30 @@ frame.set("loop.revindex0", t_2 - t_1 - 1);
 frame.set("loop.first", t_1 === 0);
 frame.set("loop.last", t_1 === t_2 - 1);
 frame.set("loop.length", t_2);
-output += "\n  <li class=\"card\">\n    <span class=\"topic-title\">";
+output += "\n  <li class=\"card\">\n    <h4>";
 output += runtime.suppressValue(runtime.memberLookup((t_4),"title"), env.opts.autoescape);
-output += "</span>\n    <span class=\"topic-description\">";
+output += "</h4>\n    <p>";
 output += runtime.suppressValue(runtime.memberLookup((t_4),"description"), env.opts.autoescape);
-output += "</span>\n  </li>\n  ";
+output += "</p>\n    <p>Votes: ";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"votes"), env.opts.autoescape);
+output += "</p>\n    ";
+if(runtime.memberLookup((t_4),"user_voted")) {
+output += "\n      <input type=\"button\" data-topiclink=\"";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"link"), env.opts.autoescape);
+output += "\" data-action=\"remove\" value=\"Remove Vote\" class=\"gobutton votebutton\" id=\"votetopic-";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"id"), env.opts.autoescape);
+output += "\"></input>\n    ";
+;
+}
+else {
+output += "\n      <input type=\"button\" data-topiclink=\"";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"link"), env.opts.autoescape);
+output += "\" data-action=\"add\" value=\"Vote\" class=\"gobutton votebutton\" id=\"votetopic-";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"id"), env.opts.autoescape);
+output += "\"></input>\n    ";
+;
+}
+output += "\n\n  </li>\n  ";
 ;
 }
 }
