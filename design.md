@@ -302,3 +302,25 @@ UUID making:
 
 Goofy sekumorphism
 http://codepen.io/ivyrosa/pen/nhxqK
+
+How to actually host the SPA with proper link rewriting:
+https://kkob.us/2015/11/24/hosting-a-single-page-app-on-s3-with-proper-urls/
+
+Alerternative to the license plate names
+Use gibberish (or something similar)
+https://github.com/greghaskins/gibberish
+to generate pronouncable words
+
+
+... chalice is annoying. CORS doesn't work right. I can't set custom headers. And so on.
+Let's call it a prototype.
+
+Interesting plumbing around s3 + cors automation
+https://github.com/mweagle/SpartaHTML
+
+https://github.com/eawsy/aws-lambda-go
+https://github.com/eawsy/aws-lambda-go-net
+https://github.com/eawsy/aws-lambda-go-net/wiki
+https://github.com/eawsy/aws-lambda-go-net/wiki/Getting%20Started
+https://github.com/eawsy/aws-lambda-go/wiki/Deployment%20Package
+https://raw.githubusercontent.com/eawsy/aws-lambda-go-net/master/_asset/start.yaml

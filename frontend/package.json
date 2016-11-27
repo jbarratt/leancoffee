@@ -4,7 +4,8 @@
   "description": "Lean Coffee Online Frontend",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "nunjucks-precompile templates/*.njk > templates.js"
   },
   "author": "Joshua Barratt",
   "license": "MIT"

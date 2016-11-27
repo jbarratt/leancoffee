@@ -21,15 +21,15 @@ def format_state(coffee):
 
 
 def check_headers():
-    if 'X-CoffeeUser' not in app.current_request.headers:
-        raise BadRequestError("All requests need X-CoffeeUser header set")
+    if 'X-Api-Key' not in app.current_request.headers:
+        raise BadRequestError("All requests need X-Api-Key header set")
 
 
 @app.route('/coffees', methods=['POST'], cors=True)
 def create_coffee():
     check_headers()
     req = app.current_request
-    uid = req.headers['X-CoffeeUser']
+    uid = req.headers['X-Api-Key']
     body = req.json_body or {}
 
     if 'title' not in body:
@@ -50,7 +50,7 @@ def create_coffee():
 def get_coffee(c_id):
     check_headers()
     req = app.current_request
-    uid = req.headers['X-CoffeeUser']
+    uid = req.headers['X-Api-Key']
     body = req.json_body or {}
 
     try:
@@ -85,7 +85,7 @@ def get_coffee(c_id):
 def create_topic(c_id):
     check_headers()
     req = app.current_request
-    uid = req.headers['X-CoffeeUser']
+    uid = req.headers['X-Api-Key']
     body = req.json_body or {}
 
     if 'title' not in body or 'description' not in body:
@@ -107,7 +107,7 @@ def create_topic(c_id):
 def modify_topic(c_id, t_id):
     check_headers()
     req = app.current_request
-    uid = req.headers['X-CoffeeUser']
+    uid = req.headers['X-Api-Key']
     body = req.json_body or {}
 
     if 'field' not in body:

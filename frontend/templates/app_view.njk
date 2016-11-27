@@ -1,0 +1,51 @@
+<div class="card coffee-title"> {{ settings.title }}</div>
+<div class="card coffee-state">
+  {% if state == "setup" %}
+    <p>Welcome to a new Lean Coffee. You can share this link with anyone who wants to join:</p>
+    <pre>
+      {{ applink }}
+    </pre>
+    {% if is_presenter %}
+      <input type="button" value="Start Collecting Topics &#x1f4e5;" class="gobutton" id="nextstate">
+    {% endif %}
+  {% elif state == "topics" %}
+    <p>Please submit your topics for discussion.</p>
+    {% if is_presenter %}
+      <input type="button" value="Begin Voting &#x23f1;" class="gobutton" id="nextstate">
+    {% endif %}
+  {% elif state == "voting" %}
+    <p>Time to vote on the topics you want to discuss. You may vote for {{ settings.votes_per_user }} topics.</p>
+    {% if is_presenter %}
+      <input type="button" value="Begin Discussing &#x23f1;" class="gobutton" id="nextstate">
+    {% endif %}
+  {% elif state == "discussing" %}
+    <p>Time to discuss</p>
+    {% if is_presenter %}
+      <input type="button" value="Next Topic &#x23f1;" class="gobutton" id="nexttopic">
+      <input type="button" value="Finish Coffee &#x23f1;" class="gobutton" id="nextstate">
+    {% endif %}
+  {% elif state == "over" %}
+    <p>Thanks for a great coffee. Come again next time! KISSES.</p>
+  {% endif %}
+</div>
+{% if state == "topics" %}
+<div class="card coffee-topic-submit">
+  <span class="card-title">Submit a topic for discussion</span>
+  <p>Short title (a few words)</p>
+  <input id="topictitle" type="text" name="topictitle" size="50"></input>
+  <p>Longer Description (tweet-sized or less)</p>
+  <textarea id="topicdescription" name="topicdescription" maxlength="140" cols="50" rows="3"></textarea><br/>
+  <input type="button" value="Submit this topic &#9749;" class="gobutton" id="submittopic"></input>
+</div>
+{% endif %}
+
+{% if topics %}
+  <ul class="coffee-topic-list">
+  {% for topic in topics %}
+  <li class="card">
+    <span class="topic-title">{{ topic.title}}</span>
+    <span class="topic-description">{{ topic.description}}</span>
+  </li>
+  {% endfor %}
+  </ul>
+{% endif %}

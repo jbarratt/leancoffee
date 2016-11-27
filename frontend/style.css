@@ -15,6 +15,16 @@ h1, h2, h3, h4, .card-title, .gobutton {
   font-family: "Oswald", "Helvetica", "Arial", sans-serif;
 }
 
+input[type="text"] {
+  padding: 10px;
+  border: none;
+  border-bottom: solid 2px #c9c9c9;
+}
+
+input[type="text"]:focus {
+  border-bottom: solid 2px #969696;
+}
+
 h1, h2, strong {
   color: #333;
 }
