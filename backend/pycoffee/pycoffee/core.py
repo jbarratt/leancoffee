@@ -96,6 +96,11 @@ class Coffee(object):
         if oldstate is not None and coffee.state != oldstate:
             return False
         coffee.update_item('state', newstate, action="PUT")
+        if newstate == 'discussing':
+            topics = self.load_topics()
+            if not topics['discussing'] and topics['to_discuss']:
+                p_topic = topics['to_discuss'][0]['id']
+                self.update_topic(p_topic, "state", "discussing")
         return True
 
     def create_topic(self, title=None, description=None):

@@ -87,6 +87,9 @@ def test_update_topic():
     second_topic = coffee.create_topic(title="second test topic",
                                        description="yes, more of that")
 
+    assert coffee.update_state("voting") is True
+    coffee.vote(topic_id, "add")
+
     coffee.update_topic(topic_id, "description", "foo")
     state = coffee.state()
     assert state['topics']['to_discuss'][0]['description'] == "foo"
@@ -99,8 +102,9 @@ def test_update_topic():
     state = coffee.state()
     assert state['topics']['to_discuss'][0]['description'] == "bar"
 
-    coffee.update_topic(topic_id, "state", "discussing", "to_discuss")
+    assert coffee.update_state("discussing") is True
     state = coffee.state()
+
     assert state['topics']['discussing'][0]['state'] == "discussing"
     assert len(state['topics']['to_discuss']) == 1
 
