@@ -5,7 +5,6 @@ import random
 import pytz
 from datetime import datetime
 from . import models as m
-import pdb
 
 
 class Coffee(object):
@@ -61,6 +60,9 @@ class Coffee(object):
         topics = m.Topic.query(self.c_id, consistent_read=True)
         epoch_time = pytz.utc.localize(datetime.utcfromtimestamp(0))
         user_votes = [] if self.user.votes is None else self.user.votes
+
+        # Create a full list of topics in order
+        # Then, split them by state, so each state is in order
         topic_list = [
             {
                 "title": t.title,
@@ -73,7 +75,11 @@ class Coffee(object):
                 "end_time": (t.endtime - epoch_time).total_seconds()
             } for t in topics
         ]
-        return sorted(topic_list, key=lambda k: k['votes'], reverse=True)
+        topic_list = sorted(topic_list, key=lambda k: k['votes'], reverse=True)
+        topic_states = {'to_discuss': [], 'discussing': [], 'discussed': []}
+        for t in topic_list:
+            topic_states[t['state']].append(t)
+        return topic_states
 
     def update_state(self, newstate, oldstate=None):
         """ Update the coffee state from oldstate to newstate.
@@ -177,7 +183,6 @@ class Coffee(object):
             Returns True if the vote was cast,
             False on error (typically user has used available votes)
         """
-        # pdb.set_trace()
         topic = m.Topic.get(self.c_id, topic_id)
         coffee = m.Coffee.get(self.c_id)
         self.load_user()

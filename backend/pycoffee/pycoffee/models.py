@@ -54,8 +54,6 @@ class Topic(Model):
     state = UnicodeAttribute(default="to_discuss")
     endtime = UTCDateTimeAttribute(default=datetime.datetime.utcnow())
 
-# TODO factor votes out into a separate TopicVotes model or something
-
 
 class User(Model):
 
