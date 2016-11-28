@@ -129,6 +129,16 @@ class Coffee(object):
                 return False
             if oldstate is not None and topic.state != oldstate:
                 return False
+            if newstate == 'discussing':
+                # TODO this is expensive; make it use a secondary index
+                # OR store the discussing topic in the Coffee itself
+                other_topics = self.load_topics()
+                if len(other_topics['discussing']) > 0:
+                    # Likely to be just the one
+                    for d_topic in other_topics['discussing']:
+                        d_model = m.Topic.get(self.c_id, d_topic['id'])
+                        d_model.update_item('state', 'discussed',
+                                            action="PUT")
             topic.update_item('state', newstate, action="PUT")
             return True
 
