@@ -21,7 +21,9 @@
   {% elif state == "discussing" %}
     <p>Time to discuss</p>
     {% if is_presenter %}
-      <input type="button" value="Next Topic &#x23f1;" class="gobutton" id="nexttopic">
+      {% if topics['to_discuss'] | length > 0 %}
+        <input type="button" value="Next Topic &#x23f1;" class="gobutton" id="nexttopic">
+      {% endif %}
       <input type="button" value="Finish Coffee &#x23f1;" class="gobutton" id="nextstate">
     {% endif %}
   {% elif state == "over" %}
@@ -38,20 +40,52 @@
   <input type="button" value="Submit this topic &#9749;" class="gobutton" id="submittopic"></input>
 </div>
 {% endif %}
+{% if topics['discussing'] | length > 0 %}
+  <h3>Discussing Now</h3>
+  {% for topic in topics['discussing'] %}
+  <div class="card">
+    <span class="card-title">{{ topic.title }} </span>
+    <p> {{ topic.description }} <p>
+  </div>
+  {% endfor %}
+{% endif %}
 
-{% if topics %}
+{% if topics['to_discuss'] | length > 0 %}
+  <h3> To Discuss </h3>
   <ul class="coffee-topic-list">
-  {% for topic in topics %}
+  {% for topic in topics['to_discuss'] %}
   <li class="card">
     <h4>{{ topic.title}}</h4>
     <p>{{ topic.description}}</p>
     <p>Votes: {{ topic.votes }}</p>
-    {% if topic.user_voted %}
-      <input type="button" data-topiclink="{{ topic.link }}" data-action="remove" value="Remove Vote" class="gobutton votebutton" id="votetopic-{{ topic.id }}"></input>
-    {% else %}
-      <input type="button" data-topiclink="{{ topic.link }}" data-action="add" value="Vote" class="gobutton votebutton" id="votetopic-{{ topic.id }}"></input>
+    {% if state == "voting" %}
+      {% if topic.user_voted %}
+        <input type="button" data-topiclink="{{ topic.link }}" data-action="remove" value="Remove Vote" class="gobutton votebutton" id="votetopic-{{ topic.id }}"></input>
+      {% else %}
+        <input type="button" data-topiclink="{{ topic.link }}" data-action="add" value="Vote" class="gobutton votebutton" id="votetopic-{{ topic.id }}"></input>
+      {% endif %}
     {% endif %}
 
+  </li>
+  {% endfor %}
+  </ul>
+{% endif %}
+
+{% if topics['discussed'] | length > 0 %}
+  <h3> Already Discussed </h3>
+  <ul class="coffee-topic-list">
+  {% for topic in topics['discussed'] %}
+  <li class="card">
+    <h4>{{ topic.title}}</h4>
+    <p>{{ topic.description}}</p>
+    <p>Votes: {{ topic.votes }}</p>
+    {% if state == "voting" %}
+      {% if topic.user_voted %}
+        <input type="button" data-topiclink="{{ topic.link }}" data-action="remove" value="Remove Vote" class="gobutton votebutton" id="votetopic-{{ topic.id }}"></input>
+      {% else %}
+        <input type="button" data-topiclink="{{ topic.link }}" data-action="add" value="Vote" class="gobutton votebutton" id="votetopic-{{ topic.id }}"></input>
+      {% endif %}
+    {% endif %}
   </li>
   {% endfor %}
   </ul>

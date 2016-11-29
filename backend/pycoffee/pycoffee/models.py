@@ -6,12 +6,13 @@ from pynamodb.attributes import (
     UnicodeSetAttribute
 )
 
-# FIXME turn this off after bug hunt
+"""
 import logging
 logging.basicConfig()
 log = logging.getLogger("pynamodb")
 log.setLevel(logging.DEBUG)
 log.propagate = True
+"""
 
 
 class Coffee(Model):

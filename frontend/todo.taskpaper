@@ -1,0 +1,31 @@
+Deploying:
+  x Set up R53
+  x Set up s3 bucket for website hosting
+  x Get an ACM cert in us-east-1
+  x Set up cloudfront distribution (+HTTP/2 & SSL)
+  x set up google apps to work for the domain?
+  x set up fancy cloudfront error redirection
+Polishing:
+  - add the top nav with the coffee title in it and control pills
+  - add the sideways category markers
+  - add a countdown timer
+  - remove all the fancy unicode buttons
+  - port to ES6 and lint it
+  - add a link copying button
+  - Upcycle the shared state into a class or something
+  - reorganize to src & build directories
+  - add a polyfill for fetch
+  - Allow people to pick their names
+  - Allow short names to be entered on the main screen
+  - Add getting started docs
+  - Have state change move doing to done
+  - favicon.ico and other suggested files from html5bp (humans.txt)
+  - link to github
+  - flush the old tables
+  - build a cleanup function to clear old data
+Storytelling:
+  - Clean up readme
+  - add license
+  - make github public
+  - write one or more blog posts
+  - share mine with other people http://www.leancoffeetable.com/About, http://leancoffee.org/

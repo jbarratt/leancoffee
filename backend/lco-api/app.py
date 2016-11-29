@@ -5,15 +5,13 @@ app = Chalice(app_name='lco-api')
 app.debug = True
 pc.init_models()
 
-# TODO sanitize all input text like CRAZY.
-# This thing is waiting for an XSS right now.
-
 
 def format_state(coffee):
     data = coffee.state()
-    for topic in data['topics']:
-        topic['link'] = '/coffees/{}/topics/{}'.format(data['id'],
-                                                       topic['id'])
+    for queue in data['topics'].values():
+        for topic in queue:
+            topic['link'] = '/coffees/{}/topics/{}'.format(data['id'],
+                                                           topic['id'])
     return {
         "links": {"self": "/coffees/{}".format(data['id'])},
         "data": data

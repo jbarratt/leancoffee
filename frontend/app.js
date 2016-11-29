@@ -1,13 +1,9 @@
 (function() {
   "use strict";
-  /*
-    * set up localStorage
-    * figure out the mode of the system
-    * When we are given an ID to connect to, start a reload loop
-    * Use the state of that to fix up the DOM state
-  */
+  
   var api_url = "https://jnraqwtne1.execute-api.us-west-2.amazonaws.com/dev/"
   var coffee_id = null;
+  var state_updated_ts = 0;
   var last_state = {};
 
   var user_id = localStorage.getItem("coffee-userid");
@@ -55,16 +51,19 @@
     if(window.location.pathname != desired_path) {
       history.pushState({}, null, desired_path);
     }
-    state['data']['applink'] = window.location.href;
-    // render out the coffee state, as a function of the
+    // janky, but this object needs decoratin before passing to the view
+    // and the object comes in as a reference. Make a clone so we can compare
+    // and decide if the view needs updating.
+    var view_data = JSON.parse(JSON.stringify(state['data']));
+    view_data['applink'] = window.location.href;
+
     var elem = document.getElementById("app-main-view");
-    elem.innerHTML = nunjucks.render('templates/app_view.njk', state['data'])
+    elem.innerHTML = nunjucks.render('templates/app_view.njk', view_data)
 
     add_click_handler("nextstate", nextstate_handler);
     add_click_handler("submittopic", submittopic_handler);
+    add_click_handler("nexttopic", nexttopic_handler);
     add_class_click_handler("votebutton", votetopic_handler);
-
-    // TODO set a timer to fetch & re-render
   }
 
 
@@ -96,10 +95,19 @@
     .then(status)
     .then(json)
     .then(function (response) {
+      state_updated_ts = Date.now();
       console.log('Request succeeded with json response ', response)
       coffee_id = response['data']['id']
-      last_state = response;
-      render_coffee_state(response)
+      // Only do any redrawing if state of the system has actually changed
+      if(JSON.stringify(response) !== JSON.stringify(last_state)) {
+        console.log("Rendering new state, last_state differed from response")
+        console.log(JSON.stringify(last_state))
+        console.log(JSON.stringify(response))
+        last_state = response;
+        render_coffee_state(response)
+      } else {
+        console.log("Not updating state, it's the same as it ever was.")
+      }
     })
     .catch(function (error) {
       console.log('request failed', error)
@@ -145,6 +153,14 @@
     coffee_client("PUT", data['topiclink'], {'field': 'votes', 'op': data['action']})
   }
 
+  var nexttopic_handler = function(e) {
+    e.preventDefault();
+    var to_discuss = last_state['data']['topics']['to_discuss'];
+    if(to_discuss.length > 0) {
+      coffee_client("PUT", to_discuss[0]['link'], {'field': 'state', 'to': 'discussing'})
+    }
+  }
+
   var nextstate_handler = function(e) {
     console.log("Going to next state, event: " + e);
     console.log("Event came from: " + e.target);
@@ -177,6 +193,15 @@
   } else {
     console.log("Not loading. coffee_id == " + coffee_id)
   }
+
+  // Set up the recurring state refresh process
+  setInterval(function() {
+    // Every second, see if we should have a server state to render, and if
+    // it has not been updated for more than 3 seconds, fetch and re-render
+    if(coffee_id != null && (Date.now() - state_updated_ts) > 3000) {
+      coffee_client("GET", "coffees/" + coffee_id)
+    }
+  }, 5000);
 
 
 }())
