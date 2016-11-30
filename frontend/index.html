@@ -3,8 +3,13 @@
   <head>
     <title>Lean Coffee Online</title>
     <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
+    <header id="header">
+      <h1>Lean Coffee Online</h1>
+      <p>Host a distributed Lean Coffee in seconds.</p>
+    </header>
     <main role="main">
       <div id="coffee-setup-view" class="card">
         <span class="card-title">Set Up The Coffee Parameters</span>
@@ -14,7 +19,7 @@
         <input id="duration" type="number" name="duration" value="300" size="4">
         <p>How many votes should each user get?</p>
         <input id="votesperuser" type="number" name="votesperuser" size="4" value="2"><br/>
-        <input type="button" value="Let's start talking! &#9749;" class="gobutton" id="createcoffee">
+        <input type="button" value="Let's start talking!" class="gobutton" id="createcoffee">
       </div>
       <div id="app-main-view">
         <div class="card">
@@ -22,11 +27,43 @@
         </div>
       </div>
       <div id="landing-view">
-        <ul>
-        <li>login window goes here</li>
-        <p><a id="newcoffee" href="#">Start a new coffee</a></p>
-        <li>what about lean coffee goes here</li>
-        </ul>
+        <div class="gorow">
+        <a id="newcoffee" class="btn btn-large" href="#">Start your own coffee</a>
+        <span>
+            <a id="joincoffee" class="btn btn-large" href="#">Join a coffee</a>
+            <input id="coffeetojoin" type="text" size="15">
+            <span class="popuptext" id="join-status-popup">Sorry, no such coffee exists.</span>
+        </span>
+        </div>
+        <h3>What is a Lean Coffee?</h3>
+        <p>A Lean Coffee is a simple framework for adding some structure a conversation, making it much more productive.</p>
+        <ol>
+          <li>An overall topic or theme is selected.</li>
+          <li>Participants share topics they would be interested in discussing.</li>
+          <li>All participants then vote on the topics, selecting a few they want to discuss.</li>
+          <li>Starting from the most popular and working down, each topic is discussed for a few minutes, and then conversation moves to the next topic.</li>
+        </ol>
+        <p>
+          And that's all there is to it!
+          You can find more from the founders at <a href="http://leancoffee.org">leancoffee.org</a>.
+        </p>
+
+        <h3>How does leancoffee.online work?</h3>
+          <p>Click above to start your own coffee. You'll pick a short code that's easy to remember and some other settings.</p>
+          <p>Now simply share the link with the other people joining the discussion, or have them come to the site and enter the code.
+            No logins, no passwords, no accounts.</p>
+          <p>As the creator, you'll have extra controls to move the session along. All participants will be able to enter topics, vote,
+            and see what topics are under discussion and coming up next.</p>
+
+        <h3>Why Lean Coffee Online?</h3>
+        <p>Typically a Lean Coffee is done face to face, with stickies or index cards, and a physical Kanban board type layout.
+          With the advent of videoconferencing, though, great discussions can still be had even when groups of people are distributed,
+          and other collaborative work tools like docs or spreadsheets make it hard to gather topics, and for the facilitator to really participate.
+        </p>
+        <p>The site was built for 2 main goals: so I could use it for my own remote Coffee sessions, and to experiment with Full Stack™ Serverless™ Responsive™ Single-Page-App™ Technologies.
+
+          To that end it's <a href="https://github.com/jbarratt/leancoffee">fully open source</a>; pull requests are, of course welcome.
+        </p>
       </div>
     </main>
     <script src="js/nunjucks-slim.js"></script>

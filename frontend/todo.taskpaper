@@ -6,23 +6,28 @@ Deploying:
   x set up google apps to work for the domain?
   x set up fancy cloudfront error redirection
 Polishing:
-  - add the top nav with the coffee title in it and control pills
+  x Add getting started docs
+  x add the top nav with the coffee title in it and control pills
+  x Allow short names to be entered on the main screen
+  - Allow people to pick their names
+  - prevent focus loss when re-rendeirng topic entry
   - add the sideways category markers
   - add a countdown timer
+  - add a spinner to the please wait loading screen
+  - change talk about seconds to minutes
   - remove all the fancy unicode buttons
   - port to ES6 and lint it
   - add a link copying button
   - Upcycle the shared state into a class or something
   - reorganize to src & build directories
   - add a polyfill for fetch
-  - Allow people to pick their names
-  - Allow short names to be entered on the main screen
-  - Add getting started docs
   - Have state change move doing to done
   - favicon.ico and other suggested files from html5bp (humans.txt)
-  - link to github
+  x link to github
   - flush the old tables
   - build a cleanup function to clear old data
+  - consider integrating redux
+  - consider rebuilding around react
 Storytelling:
   - Clean up readme
   - add license

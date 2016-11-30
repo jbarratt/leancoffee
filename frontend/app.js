@@ -1,6 +1,6 @@
 (function() {
   "use strict";
-  
+
   var api_url = "https://jnraqwtne1.execute-api.us-west-2.amazonaws.com/dev/"
   var coffee_id = null;
   var state_updated_ts = 0;
@@ -75,7 +75,39 @@
     // history.pushState({state: "setup"}, null, "/setup")
   })
 
-  function coffee_client(method, path, payload) {
+  function default_response_handler(response) {
+    state_updated_ts = Date.now();
+    console.log('Request succeeded with json response ', response)
+    coffee_id = response['data']['id']
+    // Only do any redrawing if state of the system has actually changed
+    if(JSON.stringify(response) !== JSON.stringify(last_state)) {
+      console.log("Rendering new state, last_state differed from response")
+      console.log(JSON.stringify(last_state))
+      console.log(JSON.stringify(response))
+      last_state = response;
+      render_coffee_state(response)
+    } else {
+      console.log("Not updating state, it's the same as it ever was.")
+    }
+  }
+
+  function default_error_handler(error) {
+    console.log('request failed', error)
+  }
+
+  function coffee_client(method, path, payload, response_handler, error_handler) {
+    // TODO There is a better way to do this.
+    // Allow some client use cases to override the response and error handlers
+    // else use the defaults
+    if(typeof error_handler === 'undefined') {
+      console.log("No error handler, using default")
+      error_handler = default_error_handler;
+    }
+    if(typeof response_handler === 'undefined') {
+        console.log("No response handler defined, using default")
+        response_handler = default_response_handler;
+    }
+
     console.log("Contacting coffee backend " + method + ", " + path + ", " + payload)
     var fetch_args = {
       method: method,
@@ -86,7 +118,7 @@
         'X-Api-Key': user_id
       }
     }
-    if(payload) {
+    if(payload && method != "GET") {
       fetch_args['body'] = JSON.stringify(payload);
     }
     console.log(fetch_args)
@@ -94,24 +126,8 @@
     fetch(api_url + path, fetch_args)
     .then(status)
     .then(json)
-    .then(function (response) {
-      state_updated_ts = Date.now();
-      console.log('Request succeeded with json response ', response)
-      coffee_id = response['data']['id']
-      // Only do any redrawing if state of the system has actually changed
-      if(JSON.stringify(response) !== JSON.stringify(last_state)) {
-        console.log("Rendering new state, last_state differed from response")
-        console.log(JSON.stringify(last_state))
-        console.log(JSON.stringify(response))
-        last_state = response;
-        render_coffee_state(response)
-      } else {
-        console.log("Not updating state, it's the same as it ever was.")
-      }
-    })
-    .catch(function (error) {
-      console.log('request failed', error)
-    });
+    .then(response_handler)
+    .catch(error_handler);
   }
 
   function form_get(id, cast) {
@@ -183,6 +199,31 @@
     data["description"] = form_get("topicdescription");
     coffee_client("POST", last_state["links"]["self"] + "/topics", data)
   }
+
+  var joincoffee_btn = document.getElementById("joincoffee");
+  var joincoffee_handler = function(e) {
+    // 1. set up this handler
+    e.preventDefault();
+    var popup = document.getElementById("join-status-popup");
+    popup.style.visiblity = "hidden";
+
+    var wanted_coffee_id = form_get("coffeetojoin")
+    var exists_handler = function(response) {
+      console.log("Coffee existed.")
+      switch_displayed("landing-view", "app-main-view");
+      coffee_id = wanted_coffee_id
+      default_response_handler(response)
+    }
+    var doesnt_exist_handler = function(error) {
+      console.log("Coffee Did not exist:" + error)
+      popup.style.visibility = "visible";
+      setTimeout(function() {
+        popup.style.visibility = "hidden";
+      }, 3000);
+    }
+    coffee_client("GET", "coffees/" + wanted_coffee_id, {}, exists_handler, doesnt_exist_handler)
+  }
+  joincoffee_btn.addEventListener('click', joincoffee_handler);
 
   // All we need to do the initial 'routing'
   if(window.location.pathname != '/' && coffee_id === null) {
