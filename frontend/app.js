@@ -13,6 +13,8 @@
   }
 
   function switch_displayed(id1, id2) {
+    // always kill the header, that's only for the landing page.
+    document.getElementById('header').style.display = "none";
     var old_elem = document.getElementById(id1);
     var new_elem = document.getElementById(id2);
     old_elem.style.display = "none";
@@ -146,13 +148,14 @@
   // Event handler for 'create coffee' button
   var createcoffee_btn = document.getElementById("createcoffee");
   createcoffee_btn.addEventListener('click', function(e) {
-
     e.preventDefault();
+    // TODO:
+    // 1. switch buttons to the HREF style
+    // 2. disable the button until a valid coffee topic has been entered
     switch_displayed("coffee-setup-view", "app-main-view");
-
     var data = {};
     data["title"] = form_get("coffeetopic", String);
-    data["seconds_per_topic"] = form_get("duration", parseInt);
+    data["seconds_per_topic"] = form_get("duration", parseInt) * 60;
     data["votes_per_user"] = form_get("votesperuser", parseInt)
     var payload = JSON.stringify(data);
     console.log("Creating a new coffee: " + payload)

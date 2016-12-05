@@ -1,1 +1,1 @@
-../pycoffee/dist/pycoffee-0.2.tar.gz
+../pycoffee/dist/pycoffee-0.3.tar.gz

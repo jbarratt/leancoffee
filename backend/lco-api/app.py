@@ -36,6 +36,8 @@ def create_coffee():
     kwargs = {}
     if 'title' in body:
         kwargs['title'] = body['title']
+    if 'coffee_id' in body:
+        kwargs['specified_id'] = body['coffee_id']
     for int_arg in ['seconds_per_topic', 'votes_per_user']:
         if int_arg in body:
             kwargs[int_arg] = int(body[int_arg])

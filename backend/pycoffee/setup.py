@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='pycoffee',
-      version=0.2,
+      version=0.3,
       description="Python backend for a lean coffee service",
       url="http://serialized.net",
       author="Joshua Barratt",

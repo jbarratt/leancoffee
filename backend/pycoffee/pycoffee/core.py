@@ -15,13 +15,22 @@ class Coffee(object):
     T_STATES = {'to_discuss', 'discussing', 'discussed'}
 
     def __init__(self, uid, c_id=None, title="Lean Coffee",
-                 seconds_per_topic=300, votes_per_user=2):
+                 seconds_per_topic=300, votes_per_user=2, specified_id=None):
         """ Initialize a new coffee object with required uid and optional id.
             If id is none, this means create a new coffee.
+            If specified_id is not None, that means don't autogenerate an ID.
         """
         self.uid = uid
+        if specified_id is not None and \
+                (len(specified_id) > 15 or not specified_id.isalnum()):
+            # TODO raise a better error
+            print "Coffee ID must be 15 alphanumeric chars"
+            return False
         if c_id is None:
-            self.c_id = self.shortid()
+            if specified_id is None:
+                self.c_id = self.shortid()
+            else:
+                self.c_id = specified_id.lower()
             c = m.Coffee(
                 self.c_id,
                 creator_id=uid,
@@ -32,7 +41,7 @@ class Coffee(object):
                 votes_per_user=votes_per_user)
             c.save()
         else:
-            self.c_id = c_id
+            self.c_id = c_id.lower()
             # check to ensure it is extant
             m.Coffee.get(self.c_id)
         self.load_user()
@@ -57,6 +66,7 @@ class Coffee(object):
     def load_topics(self):
         """ Returns a serialized list of the topics in the coffee,
             through the lens of the current user """
+        coffee = m.Coffee.get(self.c_id)
         topics = m.Topic.query(self.c_id, consistent_read=True)
         epoch_time = pytz.utc.localize(datetime.utcfromtimestamp(0))
         user_votes = [] if self.user.votes is None else self.user.votes
@@ -75,7 +85,12 @@ class Coffee(object):
                 "end_time": (t.endtime - epoch_time).total_seconds()
             } for t in topics
         ]
-        topic_list = sorted(topic_list, key=lambda k: k['votes'], reverse=True)
+        # Sort things alphabetically while voting to keep it fair (and stable)
+        if coffee.state == "voting":
+            topic_list = sorted(topic_list, key=lambda k: k['title'])
+        else:
+            topic_list = sorted(topic_list, key=lambda k: k[
+                                'votes'], reverse=True)
         topic_states = {'to_discuss': [], 'discussing': [], 'discussed': []}
         for t in topic_list:
             topic_states[t['state']].append(t)
@@ -263,7 +278,7 @@ class Coffee(object):
 
     @staticmethod
     def shortid():
-        return ''.join(random.choice(string.ascii_uppercase + string.digits)
+        return ''.join(random.choice(string.ascii_lowercase + string.digits)
                        for _ in range(6))
 
 
@@ -284,11 +299,11 @@ def new_coffee(
         uid=None,
         title=None,
         seconds_per_topic=300,
-        votes_per_user=2):
+        votes_per_user=2, specified_id=None):
     """ Factory method to return a new Coffee instance """
 
     return Coffee(uid=uid, title=title, seconds_per_topic=seconds_per_topic,
-                  votes_per_user=votes_per_user)
+                  votes_per_user=votes_per_user, specified_id=specified_id)
 
 
 def load_coffee(coffee_id=None, uid=None):

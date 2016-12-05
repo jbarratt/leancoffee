@@ -92,15 +92,15 @@ def test_update_topic():
 
     coffee.update_topic(topic_id, "description", "foo")
     state = coffee.state()
-    assert state['topics']['to_discuss'][0]['description'] == "foo"
+    assert state['topics']['to_discuss'][1]['description'] == "foo"
 
     coffee.update_topic(topic_id, "description", "bar", "baz")
     state = coffee.state()
-    assert state['topics']['to_discuss'][0]['description'] == "foo"
+    assert state['topics']['to_discuss'][1]['description'] == "foo"
 
     coffee.update_topic(topic_id, "description", "bar", "foo")
     state = coffee.state()
-    assert state['topics']['to_discuss'][0]['description'] == "bar"
+    assert state['topics']['to_discuss'][1]['description'] == "bar"
 
     assert coffee.update_state("discussing") is True
     state = coffee.state()

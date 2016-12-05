@@ -6,25 +6,25 @@
       {{ applink }}
     </pre>
     {% if is_presenter %}
-      <input type="button" value="Start Collecting Topics &#x1f4e5;" class="gobutton" id="nextstate">
+      <input type="button" value="Start Collecting Topics" class="gobutton" id="nextstate">
     {% endif %}
   {% elif state == "topics" %}
     <p>Please submit your topics for discussion.</p>
     {% if is_presenter %}
-      <input type="button" value="Begin Voting &#x23f1;" class="gobutton" id="nextstate">
+      <input type="button" value="Begin Voting" class="gobutton" id="nextstate">
     {% endif %}
   {% elif state == "voting" %}
     <p>Time to vote on the topics you want to discuss. You may vote for {{ settings.votes_per_user }} topics.</p>
     {% if is_presenter %}
-      <input type="button" value="Begin Discussing &#x23f1;" class="gobutton" id="nextstate">
+      <input type="button" value="Begin Discussing" class="gobutton" id="nextstate">
     {% endif %}
   {% elif state == "discussing" %}
     <p>Time to discuss</p>
     {% if is_presenter %}
       {% if topics['to_discuss'] | length > 0 %}
-        <input type="button" value="Next Topic &#x23f1;" class="gobutton" id="nexttopic">
+        <input type="button" value="Next Topic" class="gobutton" id="nexttopic">
       {% endif %}
-      <input type="button" value="Finish Coffee &#x23f1;" class="gobutton" id="nextstate">
+      <input type="button" value="Finish Coffee" class="gobutton" id="nextstate">
     {% endif %}
   {% elif state == "over" %}
     <p>Thanks for a great coffee. Come again next time! KISSES.</p>
@@ -37,7 +37,7 @@
   <input id="topictitle" type="text" name="topictitle" size="50"></input>
   <p>Longer Description (tweet-sized or less)</p>
   <textarea id="topicdescription" name="topicdescription" maxlength="140" cols="50" rows="3"></textarea><br/>
-  <input type="button" value="Submit this topic &#9749;" class="gobutton" id="submittopic"></input>
+  <input type="button" value="Submit this topic" class="gobutton" id="submittopic"></input>
 </div>
 {% endif %}
 {% if topics['discussing'] | length > 0 %}
