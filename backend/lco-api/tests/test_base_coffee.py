@@ -60,6 +60,11 @@ def test_custom_name():
 
     assert 'testingcoffee' in link
 
+    # Ensure case name test is case insensitive
+    r = requests.get(BASE_URL + '/coffees/' +
+                     'TESTINGCOFFEE', headers=admin_header)
+    assert r.status_code == 200
+
     # delete it
     r = requests.put(BASE_URL + link, headers=admin_header,
                      json={'field': 'state', 'to': 'deleted'})
