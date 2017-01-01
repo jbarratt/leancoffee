@@ -1,47 +1,41 @@
-<div class="card coffee-title"> {{ settings.title }}</div>
-<div class="card coffee-state">
-  {% if state == "setup" %}
-    <p>Welcome to a new Lean Coffee. You can share this link with anyone who wants to join:</p>
-    <pre>
-      {{ applink }}
-    </pre>
+<div class="card coffee-title">
+  <span class="card-title">{{ settings.title }}</span>
+  <span>
     {% if is_presenter %}
-      <input type="button" value="Start Collecting Topics" class="gobutton" id="nextstate">
-    {% endif %}
-  {% elif state == "topics" %}
-    <p>Please submit your topics for discussion.</p>
-    {% if is_presenter %}
-      <input type="button" value="Begin Voting" class="gobutton" id="nextstate">
-    {% endif %}
-  {% elif state == "voting" %}
-    <p>Time to vote on the topics you want to discuss. You may vote for {{ settings.votes_per_user }} topics.</p>
-    {% if is_presenter %}
-      <input type="button" value="Begin Discussing" class="gobutton" id="nextstate">
-    {% endif %}
-  {% elif state == "discussing" %}
-    <p>Time to discuss</p>
-    {% if is_presenter %}
-      {% if topics['to_discuss'] | length > 0 %}
-        <input type="button" value="Next Topic" class="gobutton" id="nexttopic">
+      {% if state == "topics" %}
+        <a href="/" id="nextstate" class="btn btn-large">Start Voting</a>
+      {% elif state == "voting" %}
+        <a href="/" id="nextstate" class="btn btn-large">Start Discussion</a>
+      {% elif state == "discussing" %}
+        {% if topics['to_discuss'] | length > 0 %}
+        <a href="/" id="nexttopic" class="btn btn-large">Next Topic</a>
+        {% endif %}
+        <a href="/" id="nextstate" class="btn btn-large">End Coffee</a>
       {% endif %}
-      <input type="button" value="Finish Coffee" class="gobutton" id="nextstate">
     {% endif %}
+  </span>
+</div>
+{% if state == "voting" or state == "over" %}
+<div class="card coffee-state">
+  {% if state == "voting" %}
+    <p>Time to vote on the topics you want to discuss. You may vote for {{ settings.votes_per_user }} topics.</p>
   {% elif state == "over" %}
-    <p>Thanks for a great coffee. Come again next time! KISSES.</p>
+    <p>Thanks for a great coffee. Please print this page to save your records, sessions are cleaned up shortly after they are closed.</p>
   {% endif %}
 </div>
+{% endif %}
 {% if state == "topics" %}
 <div class="card coffee-topic-submit">
-  <span class="card-title">Submit a topic for discussion</span>
+  <h3>Suggest a topic for discussion</h3>
   <p>Short title (a few words)</p>
   <input id="topictitle" type="text" name="topictitle" size="50"></input>
-  <p>Longer Description (tweet-sized or less)</p>
+  <p>Longer Description (Optional, and tweet-sized or less)</p>
   <textarea id="topicdescription" name="topicdescription" maxlength="140" cols="50" rows="3"></textarea><br/>
-  <input type="button" value="Submit this topic" class="gobutton" id="submittopic"></input>
+  <a href="/" id="submittopic" class="btn btn-medium">Submit This Topic</a>
 </div>
 {% endif %}
 {% if topics['discussing'] | length > 0 %}
-  <h3>Discussing Now</h3>
+  <h3 class="topicgroup-label">Discussing Now</h3>
   {% for topic in topics['discussing'] %}
   <div class="card">
     <span class="card-title">{{ topic.title }} </span>
@@ -51,42 +45,50 @@
 {% endif %}
 
 {% if topics['to_discuss'] | length > 0 %}
-  <h3> To Discuss </h3>
+  <h3 class="topicgroup-label"> To Discuss </h3>
   <ul class="coffee-topic-list">
   {% for topic in topics['to_discuss'] %}
   <li class="card">
-    <h4>{{ topic.title}}</h4>
-    <p>{{ topic.description}}</p>
-    <p>Votes: {{ topic.votes }}</p>
-    {% if state == "voting" %}
-      {% if topic.user_voted %}
-        <input type="button" data-topiclink="{{ topic.link }}" data-action="remove" value="Remove Vote" class="gobutton votebutton" id="votetopic-{{ topic.id }}"></input>
-      {% else %}
-        <input type="button" data-topiclink="{{ topic.link }}" data-action="add" value="Vote" class="gobutton votebutton" id="votetopic-{{ topic.id }}"></input>
-      {% endif %}
-    {% endif %}
-
+    <div class="gorow">
+      <div class="cardcontent">
+        <h4>{{ topic.title}}</h4>
+        <p>{{ topic.description}}</p>
+      </div>
+      <div>
+        <span>Votes: {{ topic.votes }}</span>
+        <div>
+        {% if state == "voting" %}
+          {% if topic.user_voted %}
+            <a href="/" id="votetopic-{{ topic.id }}" data-topiclink="{{ topic.link }}" data-action="remove" class="btn btn-medium votebutton">UnVote</a>
+          {% else %}
+            <a href="/" id="votetopic-{{ topic.id }}" data-topiclink="{{ topic.link }}" data-action="add" class="btn btn-medium votebutton">Vote</a>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
   </li>
   {% endfor %}
   </ul>
 {% endif %}
 
 {% if topics['discussed'] | length > 0 %}
-  <h3> Already Discussed </h3>
+  <h3 class="topicgroup-label"> Already Discussed </h3>
   <ul class="coffee-topic-list">
   {% for topic in topics['discussed'] %}
   <li class="card">
-    <h4>{{ topic.title}}</h4>
-    <p>{{ topic.description}}</p>
-    <p>Votes: {{ topic.votes }}</p>
-    {% if state == "voting" %}
-      {% if topic.user_voted %}
-        <input type="button" data-topiclink="{{ topic.link }}" data-action="remove" value="Remove Vote" class="gobutton votebutton" id="votetopic-{{ topic.id }}"></input>
-      {% else %}
-        <input type="button" data-topiclink="{{ topic.link }}" data-action="add" value="Vote" class="gobutton votebutton" id="votetopic-{{ topic.id }}"></input>
-      {% endif %}
-    {% endif %}
+    <div class="gorow">
+      <div class="cardcontent">
+        <h4>{{ topic.title}}</h4>
+        <p>{{ topic.description}}</p>
+      </div>
+    <div>
   </li>
   {% endfor %}
   </ul>
 {% endif %}
+
+<div class="card footer">
+  <p>Share <a href="{{ applink }}">{{ applink }}</a> with other participants. Copy to clipboard:
+  <button class="copyme" data-clipboard-text="{{ applink }}"> <img src="img/clippy.svg" alt="Copy to clipboard" class="clippy" width="13"> </button>
+</p>
+</div>

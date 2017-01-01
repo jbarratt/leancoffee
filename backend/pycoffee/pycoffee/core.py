@@ -35,7 +35,7 @@ class Coffee(object):
                 self.c_id,
                 creator_id=uid,
                 title=title,
-                state="setup",
+                state="topics",
                 created=datetime.now(),
                 seconds_per_topic=seconds_per_topic,
                 votes_per_user=votes_per_user)

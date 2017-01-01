@@ -5,78 +5,64 @@ var colno = null;
 var output = "";
 try {
 var parentTemplate = null;
-output += "<div class=\"card coffee-title\"> ";
+output += "<div class=\"card coffee-title\">\n  <span class=\"card-title\">";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "settings")),"title"), env.opts.autoescape);
-output += "</div>\n<div class=\"card coffee-state\">\n  ";
-if(runtime.contextOrFrameLookup(context, frame, "state") == "setup") {
-output += "\n    <p>Welcome to a new Lean Coffee. You can share this link with anyone who wants to join:</p>\n    <pre>\n      ";
-output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "applink"), env.opts.autoescape);
-output += "\n    </pre>\n    ";
+output += "</span>\n  <span>\n    ";
 if(runtime.contextOrFrameLookup(context, frame, "is_presenter")) {
-output += "\n      <input type=\"button\" value=\"Start Collecting Topics &#x1f4e5;\" class=\"gobutton\" id=\"nextstate\">\n    ";
-;
-}
-output += "\n  ";
-;
-}
-else {
+output += "\n      ";
 if(runtime.contextOrFrameLookup(context, frame, "state") == "topics") {
-output += "\n    <p>Please submit your topics for discussion.</p>\n    ";
-if(runtime.contextOrFrameLookup(context, frame, "is_presenter")) {
-output += "\n      <input type=\"button\" value=\"Begin Voting &#x23f1;\" class=\"gobutton\" id=\"nextstate\">\n    ";
-;
-}
-output += "\n  ";
+output += "\n        <a href=\"/\" id=\"nextstate\" class=\"btn btn-large\">Start Voting</a>\n      ";
 ;
 }
 else {
 if(runtime.contextOrFrameLookup(context, frame, "state") == "voting") {
-output += "\n    <p>Time to vote on the topics you want to discuss. You may vote for ";
-output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "settings")),"votes_per_user"), env.opts.autoescape);
-output += " topics.</p>\n    ";
-if(runtime.contextOrFrameLookup(context, frame, "is_presenter")) {
-output += "\n      <input type=\"button\" value=\"Begin Discussing &#x23f1;\" class=\"gobutton\" id=\"nextstate\">\n    ";
-;
-}
-output += "\n  ";
+output += "\n        <a href=\"/\" id=\"nextstate\" class=\"btn btn-large\">Start Discussion</a>\n      ";
 ;
 }
 else {
 if(runtime.contextOrFrameLookup(context, frame, "state") == "discussing") {
-output += "\n    <p>Time to discuss</p>\n    ";
-if(runtime.contextOrFrameLookup(context, frame, "is_presenter")) {
-output += "\n      ";
+output += "\n        ";
 if(env.getFilter("length").call(context, runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "topics")),"to_discuss")) > 0) {
-output += "\n        <input type=\"button\" value=\"Next Topic &#x23f1;\" class=\"gobutton\" id=\"nexttopic\">\n      ";
+output += "\n        <a href=\"/\" id=\"nexttopic\" class=\"btn btn-large\">Next Topic</a>\n        ";
 ;
 }
-output += "\n      <input type=\"button\" value=\"Finish Coffee &#x23f1;\" class=\"gobutton\" id=\"nextstate\">\n    ";
+output += "\n        <a href=\"/\" id=\"nextstate\" class=\"btn btn-large\">End Coffee</a>\n      ";
 ;
 }
-output += "\n  ";
+;
+}
+;
+}
+output += "\n    ";
+;
+}
+output += "\n  </span>\n</div>\n";
+if(runtime.contextOrFrameLookup(context, frame, "state") == "voting" || runtime.contextOrFrameLookup(context, frame, "state") == "over") {
+output += "\n<div class=\"card coffee-state\">\n  ";
+if(runtime.contextOrFrameLookup(context, frame, "state") == "voting") {
+output += "\n    <p>Time to vote on the topics you want to discuss. You may vote for ";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "settings")),"votes_per_user"), env.opts.autoescape);
+output += " topics.</p>\n  ";
 ;
 }
 else {
 if(runtime.contextOrFrameLookup(context, frame, "state") == "over") {
-output += "\n    <p>Thanks for a great coffee. Come again next time! KISSES.</p>\n  ";
-;
-}
-;
-}
-;
-}
+output += "\n    <p>Thanks for a great coffee. Please print this page to save your records, sessions are cleaned up shortly after they are closed.</p>\n  ";
 ;
 }
 ;
 }
 output += "\n</div>\n";
+;
+}
+output += "\n";
 if(runtime.contextOrFrameLookup(context, frame, "state") == "topics") {
-output += "\n<div class=\"card coffee-topic-submit\">\n  <span class=\"card-title\">Submit a topic for discussion</span>\n  <p>Short title (a few words)</p>\n  <input id=\"topictitle\" type=\"text\" name=\"topictitle\" size=\"50\"></input>\n  <p>Longer Description (tweet-sized or less)</p>\n  <textarea id=\"topicdescription\" name=\"topicdescription\" maxlength=\"140\" cols=\"50\" rows=\"3\"></textarea><br/>\n  <input type=\"button\" value=\"Submit this topic &#9749;\" class=\"gobutton\" id=\"submittopic\"></input>\n</div>\n";
+output += "\n<div class=\"card coffee-topic-submit\">\n  <h3>Suggest a topic for discussion</h3>\n  <p>Short title (a few words)</p>\n  <input id=\"topictitle\" type=\"text\" name=\"topictitle\" size=\"50\"></input>\n  <p>Longer Description (Optional, and tweet-sized or less)</p>\n  <textarea id=\"topicdescription\" name=\"topicdescription\" maxlength=\"140\" cols=\"50\" rows=\"3\"></textarea><br/>\n  <a href=\"/\" id=\"submittopic\" class=\"btn btn-medium\">Submit This Topic</a>\n</div>\n";
 ;
 }
 output += "\n";
 if(env.getFilter("length").call(context, runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "topics")),"discussing")) > 0) {
-output += "\n  <h3>Discussing Now</h3>\n  ";
+output += "\n  <h3 class=\"topicgroup-label\">Discussing Now</h3>\n  ";
 frame = frame.push();
 var t_3 = runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "topics")),"discussing");
 if(t_3) {var t_2 = t_3.length;
@@ -104,7 +90,7 @@ output += "\n";
 }
 output += "\n\n";
 if(env.getFilter("length").call(context, runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "topics")),"to_discuss")) > 0) {
-output += "\n  <h3> To Discuss </h3>\n  <ul class=\"coffee-topic-list\">\n  ";
+output += "\n  <h3 class=\"topicgroup-label\"> To Discuss </h3>\n  <ul class=\"coffee-topic-list\">\n  ";
 frame = frame.push();
 var t_7 = runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "topics")),"to_discuss");
 if(t_7) {var t_6 = t_7.length;
@@ -118,35 +104,35 @@ frame.set("loop.revindex0", t_6 - t_5 - 1);
 frame.set("loop.first", t_5 === 0);
 frame.set("loop.last", t_5 === t_6 - 1);
 frame.set("loop.length", t_6);
-output += "\n  <li class=\"card\">\n    <h4>";
+output += "\n  <li class=\"card\">\n    <div class=\"gorow\">\n      <div class=\"cardcontent\">\n        <h4>";
 output += runtime.suppressValue(runtime.memberLookup((t_8),"title"), env.opts.autoescape);
-output += "</h4>\n    <p>";
+output += "</h4>\n        <p>";
 output += runtime.suppressValue(runtime.memberLookup((t_8),"description"), env.opts.autoescape);
-output += "</p>\n    <p>Votes: ";
+output += "</p>\n      </div>\n      <div>\n        <span>Votes: ";
 output += runtime.suppressValue(runtime.memberLookup((t_8),"votes"), env.opts.autoescape);
-output += "</p>\n    ";
+output += "</span>\n        <div>\n        ";
 if(runtime.contextOrFrameLookup(context, frame, "state") == "voting") {
-output += "\n      ";
+output += "\n          ";
 if(runtime.memberLookup((t_8),"user_voted")) {
-output += "\n        <input type=\"button\" data-topiclink=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_8),"link"), env.opts.autoescape);
-output += "\" data-action=\"remove\" value=\"Remove Vote\" class=\"gobutton votebutton\" id=\"votetopic-";
+output += "\n            <a href=\"/\" id=\"votetopic-";
 output += runtime.suppressValue(runtime.memberLookup((t_8),"id"), env.opts.autoescape);
-output += "\"></input>\n      ";
+output += "\" data-topiclink=\"";
+output += runtime.suppressValue(runtime.memberLookup((t_8),"link"), env.opts.autoescape);
+output += "\" data-action=\"remove\" class=\"btn btn-medium votebutton\">UnVote</a>\n          ";
 ;
 }
 else {
-output += "\n        <input type=\"button\" data-topiclink=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_8),"link"), env.opts.autoescape);
-output += "\" data-action=\"add\" value=\"Vote\" class=\"gobutton votebutton\" id=\"votetopic-";
+output += "\n            <a href=\"/\" id=\"votetopic-";
 output += runtime.suppressValue(runtime.memberLookup((t_8),"id"), env.opts.autoescape);
-output += "\"></input>\n      ";
+output += "\" data-topiclink=\"";
+output += runtime.suppressValue(runtime.memberLookup((t_8),"link"), env.opts.autoescape);
+output += "\" data-action=\"add\" class=\"btn btn-medium votebutton\">Vote</a>\n          ";
 ;
 }
-output += "\n    ";
+output += "\n        ";
 ;
 }
-output += "\n\n  </li>\n  ";
+output += "\n      </div>\n    </div>\n  </li>\n  ";
 ;
 }
 }
@@ -156,7 +142,7 @@ output += "\n  </ul>\n";
 }
 output += "\n\n";
 if(env.getFilter("length").call(context, runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "topics")),"discussed")) > 0) {
-output += "\n  <h3> Already Discussed </h3>\n  <ul class=\"coffee-topic-list\">\n  ";
+output += "\n  <h3 class=\"topicgroup-label\"> Already Discussed </h3>\n  <ul class=\"coffee-topic-list\">\n  ";
 frame = frame.push();
 var t_11 = runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "topics")),"discussed");
 if(t_11) {var t_10 = t_11.length;
@@ -170,35 +156,11 @@ frame.set("loop.revindex0", t_10 - t_9 - 1);
 frame.set("loop.first", t_9 === 0);
 frame.set("loop.last", t_9 === t_10 - 1);
 frame.set("loop.length", t_10);
-output += "\n  <li class=\"card\">\n    <h4>";
+output += "\n  <li class=\"card\">\n    <div class=\"gorow\">\n      <div class=\"cardcontent\">\n        <h4>";
 output += runtime.suppressValue(runtime.memberLookup((t_12),"title"), env.opts.autoescape);
-output += "</h4>\n    <p>";
+output += "</h4>\n        <p>";
 output += runtime.suppressValue(runtime.memberLookup((t_12),"description"), env.opts.autoescape);
-output += "</p>\n    <p>Votes: ";
-output += runtime.suppressValue(runtime.memberLookup((t_12),"votes"), env.opts.autoescape);
-output += "</p>\n    ";
-if(runtime.contextOrFrameLookup(context, frame, "state") == "voting") {
-output += "\n      ";
-if(runtime.memberLookup((t_12),"user_voted")) {
-output += "\n        <input type=\"button\" data-topiclink=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_12),"link"), env.opts.autoescape);
-output += "\" data-action=\"remove\" value=\"Remove Vote\" class=\"gobutton votebutton\" id=\"votetopic-";
-output += runtime.suppressValue(runtime.memberLookup((t_12),"id"), env.opts.autoescape);
-output += "\"></input>\n      ";
-;
-}
-else {
-output += "\n        <input type=\"button\" data-topiclink=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_12),"link"), env.opts.autoescape);
-output += "\" data-action=\"add\" value=\"Vote\" class=\"gobutton votebutton\" id=\"votetopic-";
-output += runtime.suppressValue(runtime.memberLookup((t_12),"id"), env.opts.autoescape);
-output += "\"></input>\n      ";
-;
-}
-output += "\n    ";
-;
-}
-output += "\n  </li>\n  ";
+output += "</p>\n      </div>\n    <div>\n  </li>\n  ";
 ;
 }
 }
@@ -206,7 +168,13 @@ frame = frame.pop();
 output += "\n  </ul>\n";
 ;
 }
-output += "\n";
+output += "\n\n<div class=\"card footer\">\n  <p>Share <a href=\"";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "applink"), env.opts.autoescape);
+output += "\">";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "applink"), env.opts.autoescape);
+output += "</a> with other participants. Copy to clipboard:\n  <button class=\"copyme\" data-clipboard-text=\"";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "applink"), env.opts.autoescape);
+output += "\"> <img src=\"img/clippy.svg\" alt=\"Copy to clipboard\" class=\"clippy\" width=\"13\"> </button>\n</p>\n</div>\n";
 if(parentTemplate) {
 parentTemplate.rootRenderFunc(env, context, frame, runtime, cb);
 } else {

@@ -13,11 +13,12 @@ Polishing:
   x change talk about seconds to minutes
   x link to github
   x remove all the fancy unicode buttons
-  - Allow people to pick their names
-  - prevent focus loss when re-rendeirng topic entry
-  - add the sideways category markers
+  x Allow people to pick their names
+  x remove 'setup' state because it's worthless.
+  x add a persistent 'how to join' at the bottom of the page
+  x Fix 404 handling when someone puts a slash link in that's a 404
+  x prevent focus loss when re-rendeirng topic entry (check for active element)
   - add a countdown timer
-  - add a spinner to the please wait loading screen
   - port to ES6 and lint it (Rollup? http://rollupjs.org/guide/) (https://lebab.io/)
   - add a link copying button
   - Upcycle the shared state into a class or something

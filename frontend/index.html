@@ -5,24 +5,25 @@
     <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
-  <body>
+  <body id="body">
     <header id="header">
       <h1>Lean Coffee Online</h1>
       <p>Host a distributed Lean Coffee in seconds.</p>
     </header>
     <main role="main">
       <div id="coffee-setup-view" class="card">
-        <span class="card-title">Set Up The Coffee Parameters</span>
-        <p>Select a short ID for this coffee that's easy to share. Just letters and numbers, like 'RVA17' or 'portland'.
-        <input id="coffee-id" type="text" name="coffee-id" size="50">
+        <span class="card-title">Set Up Your Coffee</span>
+        <p>Select a short ID for this coffee that's easy to share. Just letters and numbers, like 'oscon17' or 'portland'.</br>
+        <input id="coffee-id" type="text" name="coffee-id" size="15">
+        <span id="coffee-id-available">Not Available</span>
         </p>
-        <p>What is the topic of this coffee?</p>
+        <p>What is the overall topic of this coffee? (Could be "Lean Methods", "Mixed Media Art Techniques", or whatever you want it to be.)</p>
         <input id="coffeetopic" type="text" name="coffeetopic" size="50">
         <p>How many minutes should every topic be discussed?</p>
         <input id="duration" type="number" name="duration" value="5" size="2">
         <p>How many votes should each user get?</p>
         <input id="votesperuser" type="number" name="votesperuser" size="4" value="3"><br/>
-        <input type="button" value="Let's start talking!" class="gobutton" id="createcoffee">
+        <a href="/" id="createcoffee" class="btn btn-large">Let's start talking!</a>
       </div>
       <div id="app-main-view">
         <div class="card">
@@ -31,9 +32,9 @@
       </div>
       <div id="landing-view">
         <div class="gorow">
-        <a id="newcoffee" class="btn btn-large" href="#">Start your own coffee</a>
+        <a id="newcoffee" class="btn btn-large" href="/">Start your own coffee</a>
         <span>
-            <a id="joincoffee" class="btn btn-large" href="#">Join a coffee</a>
+            <a id="joincoffee" class="btn btn-large" href="/">Join a coffee</a>
             <input id="coffeetojoin" type="text" size="15">
             <span class="popuptext" id="join-status-popup">Sorry, no such coffee exists.</span>
         </span>
@@ -70,6 +71,7 @@
       </div>
     </main>
     <script src="js/nunjucks-slim.js"></script>
+    <script src="js/clipboard.min.js"></script>
     <script src="templates.js"></script>
     <script src="app.js"></script>
   </body>

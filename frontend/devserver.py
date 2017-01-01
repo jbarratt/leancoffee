@@ -3,7 +3,7 @@
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 import re
 
-SPA_PATT = r'/[A-Za-z0-9]{6}/?$'
+SPA_PATT = r'/[A-Za-z0-9]+/?$'
 
 
 class SPAReqHandler(SimpleHTTPRequestHandler):
